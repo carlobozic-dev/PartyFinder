@@ -3,619 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎉 Party Finder - Najbolja noćna zabava u Hrvatskoj!</title>
+    <title>Party Finder</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --neon-pink: #ff0080;
-            --neon-orange: #ff8c00;
-            --neon-purple: #9d00ff;
-            --neon-blue: #00ccff;
-            --dark-bg: #0b0b0b;
-            --card-bg: #1b1b1b;
-            --text-light: #ffffff;
-            --text-gray: #cccccc;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background: var(--dark-bg);
-            color: var(--text-light);
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 50% 50%, rgba(157, 0, 255, 0.05) 0%, transparent 30%);
-        }
-
-        /* Pulsirajući animacijski efekti */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px var(--neon-pink); }
-            50% { box-shadow: 0 0 25px var(--neon-pink); }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* HEADER */
-        .main-header {
-            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple), var(--neon-orange));
-            text-align: center;
-            padding: 3rem 1rem;
-            position: relative;
-            overflow: hidden;
-            border-bottom: 4px solid var(--neon-blue);
-        }
-
-        .main-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>'),
-                linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
-            background-size: 100% 100%, 200% 200%;
-            animation: pulse 4s infinite;
-        }
-
-        .logo {
-            font-size: 4.5rem;
-            margin-bottom: 0.5rem;
-            animation: float 3s ease-in-out infinite;
-            display: inline-block;
-        }
-
-        .main-header h1 {
-            margin: 0;
-            font-size: 3.2em;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
-            margin-bottom: 0.5rem;
-        }
-
-        .tagline {
-            font-size: 1.4em;
-            margin-bottom: 1.5rem;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 300;
-        }
-
-        .contact-promo {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px 25px;
-            border-radius: 50px;
-            display: inline-block;
-            animation: glow 2s infinite;
-            margin-top: 15px;
-        }
-
-        .contact-promo a {
-            color: white;
-            font-weight: bold;
-            font-size: 1.2em;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .contact-promo i {
-            color: var(--neon-blue);
-        }
-
-        /* AUTH BUTTONS */
-        .auth-buttons {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .auth-btn {
-            padding: 10px 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            background: rgba(0, 0, 0, 0.4);
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .auth-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-            border-color: var(--neon-blue);
-        }
-
-        /* HERO SECTION */
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 40px auto;
-            max-width: 1000px;
-            flex-wrap: wrap;
-        }
-
-        .stat-box {
-            text-align: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            min-width: 180px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .stat-box:hover {
-            transform: translateY(-5px);
-            border-color: var(--neon-pink);
-        }
-
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 1em;
-            color: var(--text-gray);
-        }
-
-        /* SECTIONS */
-        section {
-            max-width: 1200px;
-            margin: 60px auto;
-            padding: 0 20px;
-            animation: slideIn 0.8s ease-out;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .section-title h2 {
-            font-size: 2.5em;
-            display: inline-block;
-            padding-bottom: 15px;
-            position: relative;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--neon-pink), var(--neon-orange));
-            border-radius: 2px;
-        }
-
-        /* FEATURES */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .feature-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 30px;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--neon-pink), var(--neon-orange));
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(255, 0, 128, 0.2);
-            border-color: var(--neon-pink);
-        }
-
-        .feature-icon {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            color: var(--neon-blue);
-        }
-
-        .feature-card h3 {
-            color: var(--neon-orange);
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-
-        /* CTA BUTTON */
-        .cta-container {
-            text-align: center;
-            margin: 60px 0;
-        }
-
-        .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-            padding: 20px 40px;
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-orange));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.3em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            box-shadow: 0 10px 20px rgba(255, 0, 128, 0.3);
-        }
-
-        .cta-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(255, 0, 128, 0.5);
-            background: linear-gradient(45deg, var(--neon-orange), var(--neon-pink));
-        }
-
-        /* MAP */
-        #map {
-            height: 600px;
-            border-radius: 20px;
-            margin: 40px auto;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-        }
-
-        /* CLUBS LIST */
-        .city-section {
-            margin-bottom: 60px;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .city-section h3 {
-            color: var(--neon-blue);
-            font-size: 2em;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(255, 140, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .clubs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-        }
-
-        .club-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .club-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
-        }
-
-        .club-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(157, 0, 255, 0.2);
-            border-color: var(--neon-purple);
-        }
-
-        .club-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .club-card h4 {
-            color: var(--neon-orange);
-            font-size: 1.4em;
-            margin: 0;
-        }
-
-        .club-badge {
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-
-        .club-info {
-            color: var(--text-gray);
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .club-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-        }
-
-        .club-link {
-            color: var(--neon-blue);
-            text-decoration: none;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s;
-        }
-
-        .club-link:hover {
-            color: var(--neon-pink);
-        }
-
-        /* FORMS */
-        .form-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .form-content {
-            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 25px 50px rgba(255, 0, 128, 0.3);
-            border: 1px solid rgba(255, 0, 128, 0.2);
-            position: relative;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        .form-content h2 {
-            margin-top: 0;
-            text-align: center;
-            color: var(--neon-orange);
-            margin-bottom: 30px;
-            font-size: 2em;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--neon-blue);
-            font-weight: bold;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            font-size: 1em;
-            transition: border 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 15px rgba(255, 0, 128, 0.2);
-        }
-
-        .form-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-            gap: 15px;
-        }
-
-        .form-buttons button {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            flex: 1;
-            font-size: 1em;
-        }
-
-        .form-buttons .submit-btn {
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-orange));
-            color: white;
-        }
-
-        .form-buttons .cancel-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .form-buttons button:hover {
-            transform: scale(1.05);
-        }
-
-        /* FOOTER */
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.8));
-            margin-top: 80px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .social-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.3em;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .social-icon:hover {
-            background: var(--neon-pink);
-            transform: translateY(-5px);
-        }
-
-        .copyright {
-            color: var(--text-gray);
-            font-size: 0.9em;
-            margin-top: 20px;
-        }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-orange));
-            border-radius: 5px;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .main-header h1 {
-                font-size: 2.5em;
-            }
-            
-            .logo {
-                font-size: 3.5rem;
-            }
-            
-            .auth-buttons {
-                position: relative;
-                top: 0;
-                right: 0;
-                justify-content: center;
-                margin-bottom: 20px;
-            }
-            
-            .hero-stats {
-                gap: 20px;
-            }
-            
-            .stat-box {
-                min-width: 140px;
-                padding: 15px;
-            }
-            
-            .clubs-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    
+    
+            <div class="clubs-list">
+                <div class="club-card">
+                    <h3><a href="https://www.depozagreb.hr" target="_blank">Depo Club</a></h3>
+                    <p><strong>Događaj:</strong> Techno Night</p>
+                    <p><strong>Cijene:</strong> ulaz ~12 €, piće od ~4-5 €</p>
+                    <p><strong>Opis:</strong> Elektronika, duboki house i techno.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://www.boogaloo.hr" target="_blank">Boogaloo</a></h3>
+                    <p><strong>Događaj:</strong> Retro Party</p>
+                    <p><strong>Cijene:</strong> ulaz ~10 €, piće od ~4 €</p>
+                    <p><strong>Opis:</strong> Popularni pop/rock/disco klub.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://out-bar.hr" target="_blank">Out Bar / Club</a></h3>
+                  
 </head>
 <body>
 
     <!-- Sign In Form -->
     <div id="signin-form" class="form-container">
         <div class="form-content">
-            <h2>🎯 Prijava</h2>
+            <h2>Prijava</h2>
             <form id="signin-form-element">
                 <div class="form-group">
-                    <label for="signin-email"><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="signin-email" required placeholder="tvoj@email.com">
+                    <label for="signin-email">Email</label>
+                    <input type="email" id="signin-email" required>
                 </div>
                 <div class="form-group">
-                    <label for="signin-password"><i class="fas fa-lock"></i> Lozinka</label>
-                    <input type="password" id="signin-password" required placeholder="Tvoja lozinka">
+                    <label for="signin-password">Lozinka</label>
+                    <input type="password" id="signin-password" required>
                 </div>
                 <div class="form-buttons">
-                    <button type="button" class="cancel-btn" onclick="closeForm('signin-form')"><i class="fas fa-times"></i> Odustani</button>
-                    <button type="submit" class="submit-btn"><i class="fas fa-sign-in-alt"></i> Prijavi se</button>
+                    <button type="button" class="cancel-btn" onclick="closeForm('signin-form')">Odustani</button>
+                    <button type="submit" class="submit-btn">Prijavi se</button>
                 </div>
             </form>
         </div>
@@ -624,662 +50,261 @@
     <!-- Sign Up Form -->
     <div id="signup-form" class="form-container">
         <div class="form-content">
-            <h2>🚀 Registracija</h2>
+            <h2>Registracija</h2>
             <form id="signup-form-element">
                 <div class="form-group">
-                    <label for="signup-name"><i class="fas fa-user"></i> Ime</label>
-                    <input type="text" id="signup-name" required placeholder="Tvoje ime">
+                    <label for="signup-name">Ime</label>
+                    <input type="text" id="signup-name" required>
                 </div>
                 <div class="form-group">
-                    <label for="signup-email"><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="signup-email" required placeholder="tvoj@email.com">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required>
                 </div>
                 <div class="form-group">
-                    <label for="signup-password"><i class="fas fa-lock"></i> Lozinka</label>
-                    <input type="password" id="signup-password" required placeholder="Najmanje 8 znakova">
+                    <label for="signup-password">Lozinka</label>
+                    <input type="password" id="signup-password" required>
                 </div>
                 <div class="form-group">
-                    <label for="signup-confirm-password"><i class="fas fa-lock"></i> Potvrdi lozinku</label>
-                    <input type="password" id="signup-confirm-password" required placeholder="Ponovi lozinku">
+                    <label for="signup-confirm-password">Potvrdi lozinku</label>
+                    <input type="password" id="signup-confirm-password" required>
                 </div>
                 <div class="form-buttons">
-                    <button type="button" class="cancel-btn" onclick="closeForm('signup-form')"><i class="fas fa-times"></i> Odustani</button>
-                    <button type="submit" class="submit-btn"><i class="fas fa-user-plus"></i> Registriraj se</button>
+                    <button type="button" class="cancel-btn" onclick="closeForm('signup-form')">Odustani</button>
+                    <button type="submit" class="submit-btn">Registriraj se</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MAIN HEADER -->
-    <header class="main-header">
+    <header>
         <div class="auth-buttons">
-            <button class="auth-btn" onclick="openForm('signin-form')"><i class="fas fa-sign-in-alt"></i> Prijava</button>
-            <button class="auth-btn" onclick="openForm('signup-form')"><i class="fas fa-user-plus"></i> Registracija</button>
+            <button onclick="openForm('signin-form')">Prijava</button>
+            <button onclick="openForm('signup-form')">Registracija</button>
         </div>
-        
-        <div class="logo">🎉</div>
-        <h1>PARTY FINDER</h1>
-        <p class="tagline">PRONAĐI NAJBOLJU ZABAVU • SKUPLJAJ BODOVE • OSVAJAJ NAGRADE</p>
-        
-        <div class="contact-promo">
-            <a href="tel:+385958137688">
-                <i class="fas fa-phone-alt"></i>
-                <span>KONTAKTIRAJ NAS: 095 813 7688</span>
-            </a>
-        </div>
+        <h1>Party Finder</h1>
+        <p>Pronađi najbolja mjesta za izlaske i skupljaj nagrade!</p>
     </header>
 
-    <!-- HERO STATS -->
-    <div class="hero-stats">
-        <div class="stat-box">
-            <div class="stat-number">150+</div>
-            <div class="stat-label">KLUBOVA</div>
+    <section>
+        <div class="features">
+            <h2>Što je Party Finder?</h2>
+            <p><strong>Party Finder</strong> je aplikacija koja povezuje partijanere i klubove. Pomažemo ti pronaći najbolja mjesta za zabavu, 
+            skupljati bodove, dijeliti doživljaje i osvajati nagrade!</p>
         </div>
-        <div class="stat-box">
-            <div class="stat-number">50.000+</div>
-            <div class="stat-label">KORISNIKA</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-number">1.2M+</div>
-            <div class="stat-label">SKENIRANIH KODOVA</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-number">500+</div>
-            <div class="stat-label">DOGAĐANJA MJESEČNO</div>
-        </div>
-    </div>
 
-    <!-- FEATURES SECTION -->
-    <section id="features">
-        <div class="section-title">
-            <h2>ZAŠTO PARTY FINDER?</h2>
+        <div class="features">
+            <h2>Glavne značajke</h2>
+            <ul>
+                <li>Pomaže ljudima pronaći najbolja mjesta za izlaske.</li>
+                <li>Korisnici skupljaju bodove skeniranjem kodova u partnerskim klubovima.</li>
+                <li>Mogućnost ocjenjivanja klubova, dijeljenja slika i live videa.</li>
+                <li>Klubovi se promoviraju preko aplikacije i mogu najavljivati izvođače.</li>
+                <li>Nagradni sustav – osvoji besplatno piće, bocu ili stol!</li>
+                <li>Prodaja karata za događaje i koncerte izravno kroz aplikaciju.</li>
+                <li>Detaljni opisi klubova: vrsta glazbe, cijene, omjer muškaraca i žena, dress code.</li>
+                <li>Aplikacija donosi korist i klubovima i korisnicima – a mi zarađujemo postotak od svake transakcije.</li>
+            </ul>
         </div>
-        
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🎯</div>
-                <h3>PRONAĐI SAVRŠENU ZABAVU</h3>
-                <p>Algoritam koji preporučuje klubove na temelju tvojih preferenci. Techno, house, pop, rock - imamo sve!</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">💰</div>
-                <h3>SKUPLJAJ & ŠTEDI</h3>
-                <p>Skeniraj QR kodove u klubovima i skupljaj bodove za besplatna pića, popuste i VIP ulaske!</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">🎫</div>
-                <h3>KUPUJ KARTE ONLINE</h3>
-                <p>Kupi karte za koncerte i događaje izravno u appu - bez čekanja u redu, sa ekskluzivnim popustima!</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3>DIJELI ISKUSTVA</h3>
-                <p>Ocijeni klubove, podijeli slike i live snimke, pomogni drugima pronaći najbolju zabavu!</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">🏆</div>
-                <h3>OSVAJAJ NAGRADE</h3>
-                <p>Budí najbolji partijaner mjeseca i osvoji boccu šampanjca, VIP sto ili putovanje na festival!</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3>REAL-TIME INFO</h3>
-                <p>Živi prikaz gužve, omjera muškaraca i žena, cijena i dress codea prije nego što izađeš!</p>
-            </div>
-        </div>
-        
-        <div class="cta-container">
-            <a href="#" class="cta-button">
-                <i class="fas fa-download"></i>
-                <span>PREUZMI APLIKACIJU BESPLATNO</span>
-            </a>
-        </div>
+
+        <a href="#" class="cta">Preuzmi aplikaciju</a>
     </section>
 
-    <!-- MAP SECTION -->
+    <!-- SEKCIJA: Mapa uživo -->
     <section id="map-section">
-        <div class="section-title">
-            <h2><i class="fas fa-map-marked-alt"></i> ŽIVA MAPA KLUBOVA</h2>
-            <p style="text-align:center; margin-top:15px; color:var(--text-gray);">Klikni na marker za detalje, cijene i događaje u klubovima!</p>
-        </div>
+        <h2 style="text-align:center;">Mapa klubova i događanja u Hrvatskoj</h2>
+        <p style="text-align:center;">Pregledaj gdje se večeras najbolje partijaju i saznaj cijene, izvođače i evente!</p>
         
         <div id="map"></div>
     </section>
 
-    <!-- CLUBS SECTION -->
+    <!-- SEKCIJA: Lista klubova po gradovima -->
     <section id="clubs-list">
-        <div class="section-title">
-            <h2><i class="fas fa-glass-cheers"></i> TOP KLUBOVI U HRVATSKOJ</h2>
-            <p style="text-align:center; margin-top:15px; color:var(--text-gray);">Istraži najbolja mjesta za izlaske po gradovima</p>
-        </div>
+        <h2 style="text-align:center;">Klubovi po gradovima</h2>
         
-        <!-- ZAGREB -->
         <div class="city-section">
-            <h3><i class="fas fa-city"></i> ZAGREB</h3>
-            <div class="clubs-grid">
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Aquarius</h4>
-                        <span class="club-badge">#1 ZG</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, EDM, House</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 10-15€, piće od 5€</p>
-                        <p><strong>⭐ Spec:</strong> Najveći klub u ZG, 3 dancefloors</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://aquarius.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Posjeti stranicu
-                        </a>
-                    </div>
+            <h3>Zagreb</h3>  <p><strong>Događaj:</strong> House / Commercial</p>
+                    <p><strong>Cijene:</strong> ulaz ~9-10 €, piće od ~4 €</p>
+                    <p><strong>Opis:</strong> Komercijalna glazba, lako ulazak.</p>
                 </div>
-                
                 <div class="club-card">
-                    <div class="club-header">
-                        <h4>Depo</h4>
-                        <span class="club-badge">TECHNO</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Techno, Deep House</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 12€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Underground, industrijski prostor</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://depo-zg.com" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Web stranica
-                        </a>
-                    </div>
+                    <h3><a href="https://katranzagreb.hr" target="_blank">Katran</a></h3>
+                    <p><strong>Događaj:</strong> Underground Session</p>
+                    <p><strong>Cijene:</strong> ulaz ~8-10 €, piće od ~3-4 €</p>
+                    <p><strong>Opis:</strong> Manji klub, alternativni program.</p>
                 </div>
-                
                 <div class="club-card">
-                    <div class="club-header">
-                        <h4>Boogaloo</h4>
-                        <span class="club-badge">RETRO</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> 80s, 90s, Commercial</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 8-10€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Retro vibe, 3 kata</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://boogaloo.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Službena stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>SAX!</h4>
-                        <span class="club-badge">R&B</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> R&B, Hip-Hop, Commercial</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 10€, piće od 5€</p>
-                        <p><strong>⭐ Spec:</strong> Moderni interijer, VIP zone</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://sax.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Posjeti klub
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Masters</h4>
-                        <span class="club-badge">VIP</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, House</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 15€+, piće od 6€</p>
-                        <p><strong>⭐ Spec:</strong> Ekskluzivni VIP prostori</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://masters.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Web stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Katran</h4>
-                        <span class="club-badge">ALTERNATIVE</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Alternative, Rock, Indie</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 5-8€, piće od 3€</p>
-                        <p><strong>⭐ Spec:</strong> Studentski, budget friendly</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://katran.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Više informacija
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>H2O Club</h4>
-                        <span class="club-badge">SUMMER</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, EDM</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 10-20€, piće od 5€</p>
-                        <p><strong>⭐ Spec:</strong> Bazen, ljetna terasa</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://instagram.com/h2o_club_zg" target="_blank" class="club-link">
-                            <i class="fab fa-instagram"></i> Instagram
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>BP Club</h4>
-                        <span class="club-badge">URBAN</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Hip-Hop, R&B, Trap</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 8-12€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Urban scena, graffiti art</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://facebook.com/BPClubZG" target="_blank" class="club-link">
-                            <i class="fab fa-facebook"></i> Facebook
-                        </a>
-                    </div>
+                    <h3><a href="https://močvara.hr" target="_blank">Močvara</a></h3>
+                    <p><strong>Događaj:</strong> Live Indie Band</p>
+                    <p><strong>Cijene:</strong> ulaz ~15 €, piće od ~5 €</p>
+                    <p><strong>Opis:</strong> Kultni klub u Zagrebu za live nastupe.</p>
                 </div>
             </div>
         </div>
-        
-        <!-- SPLIT -->
-        <div class="city-section">
-            <h3><i class="fas fa-sun"></i> SPLIT</h3>
-            <div class="clubs-grid">
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Vanilla Club</h4>
-                        <span class="club-badge">#1 ST</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, House</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 15-20€, piće od 6€</p>
-                        <p><strong>⭐ Spec:</strong> Luxurious, 3 floors</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://vanilla.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Službena stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Central Club</h4>
-                        <span class="club-badge">MAINSTREAM</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, Pop</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 10-15€, piće od 5€</p>
-                        <p><strong>⭐ Spec:</strong> Centralna lokacija</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://central.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Web stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Judas</h4>
-                        <span class="club-badge">ROCK</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Rock, Alternative</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 5-8€, piće od 3€</p>
-                        <p><strong>⭐ Spec:</strong> Rock koncerti, živa glazba</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://judas.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Posjeti stranicu
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Quasimodo</h4>
-                        <span class="club-badge">LIVE</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Live bands, Rock</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 8-10€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Kultni live music klub</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://quasimodo.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Službena stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Academia</h4>
-                        <span class="club-badge">HIP-HOP</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Hip-Hop, R&B</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 10€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Studentski, urban scena</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://academia-ghetto.com" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Više informacija
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>O'Hara Music Club</h4>
-                        <span class="club-badge">MIXED</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Various, Theme nights</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 8-12€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Tematske večeri, dobra hrana</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://instagram.com/oharamusicclub" target="_blank" class="club-link">
-                            <i class="fab fa-instagram"></i> Instagram
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- RIJEKA -->
-        <div class="city-section">
-            <h3><i class="fas fa-anchor"></i> RIJEKA</h3>
-            <div class="clubs-grid">
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Crkva</h4>
-                        <span class="club-badge">TECHNO</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Techno, Underground</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 8-10€, piće od 3€</p>
-                        <p><strong>⭐ Spec:</strong> Bivša crkva, jedinstven atmosfera</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://crkva.club" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Službena stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Palach</h4>
-                        <span class="club-badge">ALTERNATIVE</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Alternative, Rock</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 5-7€, piće od 3€</p>
-                        <p><strong>⭐ Spec:</strong> Kultni rock klub</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://palach.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Web stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Lotos Club</h4>
-                        <span class="club-badge">LUXURY</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, House</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 12-15€, piće od 5€</p>
-                        <p><strong>⭐ Spec:</strong> Luksuzni interijer</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://lotos.hr" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Posjeti klub
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- DUBROVNIK -->
-        <div class="city-section">
-            <h3><i class="fas fa-crown"></i> DUBROVNIK</h3>
-            <div class="clubs-grid">
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Revelin</h4>
-                        <span class="club-badge">HISTORIC</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, EDM</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 15-25€, piće od 7€</p>
-                        <p><strong>⭐ Spec:</strong> Unutar 500-godišnje tvrđave</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://revelinclub.com" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Službena stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>East West</h4>
-                        <span class="club-badge">BEACH</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Lounge, House</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz free, piće od 8€</p>
-                        <p><strong>⭐ Spec:</strong> Beach club s bazenom</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://eastwestbeachclub.com" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Web stranica
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- ZADAR -->
-        <div class="city-section">
-            <h3><i class="fas fa-water"></i> ZADAR</h3>
-            <div class="clubs-grid">
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>The Garden</h4>
-                        <span class="club-badge">NATURE</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Deep House, Techno</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 10-15€, piće od 5€</p>
-                        <p><strong>⭐ Spec:</strong> Open-air, botanički vrt</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://thegardenzadar.com" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Službena stranica
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Arsenal</h4>
-                        <span class="club-badge">CULTURAL</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Various, Live music</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 8-12€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Kulturni centar, koncerti</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://arsenalzadar.com" target="_blank" class="club-link">
-                            <i class="fas fa-external-link-alt"></i> Posjeti stranicu
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- OSTALI GRADOVI -->
-        <div class="city-section">
-            <h3><i class="fas fa-star"></i> OSTALI TOP KLUBOVI</h3>
-            <div class="clubs-grid">
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Modesto (Zadar)</h4>
-                        <span class="club-badge">URBAN</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Hip-Hop, R&B, Commercial</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 8-12€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Urban, moderna scena</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://instagram.com/modesto_zadar" target="_blank" class="club-link">
-                            <i class="fab fa-instagram"></i> Instagram
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Aquarium (Zadar)</h4>
-                        <span class="club-badge">BEACH</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, EDM</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 10-15€, piće od 5€</p>
-                        <p><strong>⭐ Spec:</strong> Beach club, pool parties</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://instagram.com/aquariumzadar" target="_blank" class="club-link">
-                            <i class="fab fa-instagram"></i> Instagram
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Galeb (Rijeka)</h4>
-                        <span class="club-badge">NAUTICAL</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Commercial, House</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 8-10€, piće od 4€</p>
-                        <p><strong>⭐ Spec:</strong> Na brodu, jedinstveno iskustvo</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://facebook.com/galebclub" target="_blank" class="club-link">
-                            <i class="fab fa-facebook"></i> Facebook
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="club-card">
-                    <div class="club-header">
-                        <h4>Kult (Split)</h4>
-                        <span class="club-badge">ALTERNATIVE</span>
-                    </div>
-                    <div class="club-info">
-                        <p><strong>🎵 Glazba:</strong> Alternative, Indie</p>
-                        <p><strong>💰 Cijene:</strong> Ulaz 5-8€, piće od 3€</p>
-                        <p><strong>⭐ Spec:</strong> Studentski, budget friendly</p>
-                    </div>
-                    <div class="club-footer">
-                        <a href="https://instagram.com/kultsplit" target="_blank" class="club-link">
-                            <i class="fab fa-instagram"></i> Instagram
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- FINAL CTA -->
-    <div class="cta-container" style="margin-top: 80px;">
-        <h2 style="text-align:center; margin-bottom:30px; color:var(--neon-blue);">SPREMAN ZA ZABAVU? 🎊</h2>
-        <a href="#" class="cta-button" style="padding: 25px 50px; font-size: 1.5em;">
-            <i class="fas fa-rocket"></i>
-            <span>PREUZMI APP I ZAPOČNI AVANTURU!</span>
-        </a>
-        <p style="text-align:center; margin-top:20px; color:var(--text-gray);">
-            Besplatno za iOS i Android • Preko 50.000 zadovoljnih korisnika
-        </p>
-    </div>
+        <div class="city-section">
+            <h3>Split</h3>
+            <div class="clubs-list">
+                <div class="club-card">
+                    <h3><a href="https://vanilla-club.hr" target="_blank">Vanilla Club</a></h3>
+                    <p><strong>Događaj:</strong> Summer Vibes Party</p>
+                    <p><strong>Cijene:</strong> ulaz ~15 €, piće od ~6 €</p>
+                    <p><strong>Opis:</strong> Popularan turistički klub.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://centralclub.hr" target="_blank">Central Club</a></h3>
+                    <p><strong>Događaj:</strong> Mainstream Hits Night</p>
+                    <p><strong>Cijene:</strong> ulaz ~12 €, piće od ~5 €</p>
+                    <p><strong>Opis:</strong> Glavna partijska zona u Splitu.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://club305split.hr" target="_blank">Club 305</a></h3>
+                    <p><strong>Događaj:</strong> Electronic Tour</p>
+                    <p><strong>Cijene:</strong> ulaz ~10-12 €, piće od ~5-6 €</p>
+                    <p><strong>Opis:</strong> Manji, ali poznat klub.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://kocka-club.com" target="_blank">Kocka Club</a></h3>
+                    <p><strong>Događaj:</strong> Hard Techno Rave</p>
+                    <p><strong>Cijene:</strong> ulaz ~8-10 €, piće od ~4 €</p>
+                    <p><strong>Opis:</strong> Alternativniji techno program.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://academiaghetto.com" target="_blank">Academia Ghetto</a></h3>
+                    <p><strong>Događaj:</strong> Hip-Hop Live</p>
+                    <p><strong>Cijene:</strong> ulaz ~12 €, piće od ~5 €</p>
+                    <p><strong>Opis:</strong> Hip-hop i R&B scena.</p>
+                </div>
+            </div>
+        </div>
 
-    <!-- FOOTER -->
+        <div class="city-section">
+            <h3>Rijeka</h3>
+            <div class="clubs-list">
+                <div class="club-card">
+                    <h3><a href="https://crkva.club" target="_blank">Club Crkva</a></h3>
+                    <p><strong>Događaj:</strong> Underground Techno</p>
+                    <p><strong>Cijene:</strong> ulaz ~8-9 €, piće ~4 €</p>
+                    <p><strong>Opis:</strong> Elektronika u Rijeci.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://karolina-club.com" target="_blank">Karolina Club</a></h3>
+                    <p><strong>Događaj:</strong> House & Commercial</p>
+                    <p><strong>Cijene:</strong> ulaz ~10 €, piće ~5 €</p>
+                    <p><strong>Opis:</strong> Popularan među mladima.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://indigo-bar.hr" target="_blank">Indigo Bar & Club</a></h3>
+                    <p><strong>Događaj:</strong> Student Night</p>
+                    <p><strong>Cijene:</strong> ulaz ~7-8 €, piće ~3-4 €</p>
+                    <p><strong>Opis:</strong> Povoljniji klub.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://ralphia-bar.com" target="_blank">Rakhia Bar / Klub</a></h3>
+                    <p><strong>Događaj:</strong> Đir po Starom Gradu</p>
+                    <p><strong>Cijene:</strong> ulaz ~free do ~5 €, piće ~3-4 €</p>
+                    <p><strong>Opis:</strong> Casual, bar + klub kombinacija.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://garcon-club.hr" target="_blank">Garçon Club</a></h3>
+                    <p><strong>Događaj:</strong> Late Night Commercial</p>
+                    <p><strong>Cijene:</strong> ulaz ~9-10 €, piće ~4-5 €</p>
+                    <p><strong>Opis:</strong> Hip & popularan.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="city-section">
+            <h3>Osijek</h3>
+            <div class="clubs-list">
+                <div class="club-card">
+                    <h3><a href="https://clubsevenosijek.hr" target="_blank">Club Seven</a></h3>
+                    <p><strong>Događaj:</strong> Commercial Hits Night</p>
+                    <p><strong>Cijene:</strong> ulaz ~8-10 €, piće ~3-4 €</p>
+                    <p><strong>Opis:</strong> Jedan od večih u Osijeku.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://banquet-club.hr" target="_blank">Banquet Club</a></h3>
+                    <p><strong>Događaj:</strong> House & EDM</p>
+                    <p><strong>Cijene:</strong> ulaz ~9-11 €, piće ~4-5 €</p>
+                    <p><strong>Opis:</strong> EDM scena.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://clubvelvetosijek.hr" target="_blank">Club Velvet</a></h3>
+                    <p><strong>Događaj:</strong> Latin Party</p>
+                    <p><strong>Cijene:</strong> ulaz ~7-9 €, piće ~3-4 €</p>
+                    <p><strong>Opis:</strong> Latin ritmovi.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://clubmixosijek.hr" target="_blank">Club Mix</a></h3>
+                    <p><strong>Događaj:</strong> Student Night</p>
+                    <p><strong>Cijene:</strong> ulaz ~5-6 €, piće ~2-3 €</p>
+                    <p><strong>Opis:</strong> Povoljna opcija.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://clubvibeosijek.hr" target="_blank">Club Vibe</a></h3>
+                    <p><strong>Događaj:</strong> Dance Floor Extravaganza</p>
+                    <p><strong>Cijene:</strong> ulaz ~10-12 €, piće ~5-6 €</p>
+                    <p><strong>Opis:</strong> Veći event-format.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="city-section">
+            <h3>Zadar</h3>
+            <div class="clubs-list">
+                <div class="club-card">
+                    <h3><a href="https://clubrawzadar.hr" target="_blank">Club RAW</a></h3>
+                    <p><strong>Događaj:</strong> Beach After Party</p>
+                    <p><strong>Cijene:</strong> ulaz ~10 €, piće od ~4-5 €</p>
+                    <p><strong>Opis:</strong> Plažni klub, ljeto.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://clubpapaya-zadar.hr" target="_blank">Papaya Zadar</a></h3>
+                    <p><strong>Događaj:</strong> Festival Night</p>
+                    <p><strong>Cijene:</strong> ulaz ~20 €, piće ~6-7 €</p>
+                    <p><strong>Opis:</strong> Veći događaji.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://clubbluedaydream.hr" target="_blank">Blue Daydream Club</a></h3>
+                    <p><strong>Događaj:</strong> Summer House Night</p>
+                    <p><strong>Cijene:</strong> ulaz ~9-10 €, piće od ~4 €</p>
+                    <p><strong>Opis:</strong> House & EDM.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://clubhalo-zadar.hr" target="_blank">Halo Club</a></h3>
+                    <p><strong>Događaj:</strong> Latin & Reggaeton</p>
+                    <p><strong>Cijene:</strong> ulaz ~11-12 €, piće od ~4-5 €</p>
+                    <p><strong>Opis:</strong> Fokus na latino ritmove.</p>
+                </div>
+                <div class="club-card">
+                    <h3><a href="https://clublux-zadar.hr" target="_blank">Lux Club Zadar</a></h3>
+                    <p><strong>Događaj:</strong> VIP Night</p>
+                    <p><strong>Cijene:</strong> ulaz ~15 €, piće ~6-7 €</p>
+                    <p><strong>Opis:</strong> VIP atmosfera.</p>
+                </div>
+            </div>
+        </div>
+    section>
+
     <footer>
-        <div class="social-links">
-            <a href="https://instagram.com/partyfinder_hr" target="_blank" class="social-icon">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://facebook.com/partyfinderhr" target="_blank" class="social-icon">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="https://tiktok.com/@partyfinder_hr" target="_blank" class="social-icon">
-                <i class="fab fa-tiktok"></i>
-            </a>
-            <a href="https://twitter.com/partyfinder_hr" target="_blank" class="social-icon">
-                <i class="fab fa-twitter"></i>
-            </a>
-        </div>
-        
-        <div class="contact-promo" style="background: rgba(255,255,255,0.1);">
-            <a href="tel:+385958137688">
-                <i class="fas fa-phone-alt"></i>
-                <span>BESPLATNI POZIV: 095 813 7688</span>
-            </a>
-        </div>
-        
-        <p class="copyright">
-            © 2025 Party Finder Croatia | Sva prava pridržana<br>
-            Pronađi. Skeniraj. Zabavi. Ponovi. 🔄
-        </p>
+        <p>© 2025 Party Finder | Tvoj vodič kroz noćni život</p>
     </footer>
 
-    <!-- SCRIPTS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // FORM FUNCTIONS
+        // Funkcije za upravljanje formama
         function openForm(formId) {
             document.getElementById(formId).style.display = 'flex';
-            document.body.style.overflow = 'hidden';
         }
 
         function closeForm(formId) {
             document.getElementById(formId).style.display = 'none';
-            document.body.style.overflow = 'auto';
         }
 
-        // FORM SUBMIT HANDLERS
+        // Rukovanje submit događajima formi
         document.getElementById('signin-form-element').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('🎉 Dobrodošao natrag! Uspješno si prijavljen!');
+            alert('Prijava uspješna! (Ovo je demo)');
             closeForm('signin-form');
         });
 
@@ -1289,170 +314,70 @@
             const confirmPassword = document.getElementById('signup-confirm-password').value;
             
             if (password !== confirmPassword) {
-                alert('❌ Lozinke se ne podudaraju! Pokušaj ponovno.');
+                alert('Lozinke se ne podudaraju!');
                 return;
             }
             
-            alert('🚀 Uspješna registracija! Dobrodošao u Party Finder obitelj!');
+            alert('Registracija uspješna! (Ovo je demo)');
             closeForm('signup-form');
         });
 
-        // MAP INITIALIZATION
-        var map = L.map('map').setView([45.1, 15.2], 7);
+        // Inicijalizacija mape – centar Hrvatske
+        var map = L.map('map').setView([45.8, 16.0], 7);
 
-        // Add OpenStreetMap layer
+        // Dodavanje OpenStreetMap sloja
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
-        // Custom club icon
-        var clubIcon = L.divIcon({
-            html: '<div style="background: linear-gradient(45deg, #ff0080, #ff8c00); width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; border: 2px solid white; box-shadow: 0 0 10px rgba(255,0,128,0.5);">🎯</div>',
-            className: 'club-marker',
-            iconSize: [30, 30]
-        });
-
-        // Function to add clubs to map
-        function addClubToMap(lat, lon, name, city, music, prices, link, type) {
-            const marker = L.marker([lat, lon], { icon: clubIcon }).addTo(map);
-            
-            let typeColor = '#ff0080';
-            if (type === 'techno') typeColor = '#9d00ff';
-            if (type === 'rock') typeColor = '#ff5500';
-            if (type === 'hiphop') typeColor = '#00cc66';
-            if (type === 'luxury') typeColor = '#ffcc00';
-            if (type === 'beach') typeColor = '#00ccff';
-            
+        // Funkcija za dodavanje klubova
+        function dodajKlub(lat, lon, naziv, grad, dogadjaj, cijene, link) {
+            const marker = L.marker([lat, lon]).addTo(map);
             marker.bindPopup(`
-                <div style="min-width: 250px; padding: 10px; font-family: Arial, sans-serif;">
-                    <h3 style="margin: 0 0 10px 0; color: ${typeColor}; border-bottom: 2px solid ${typeColor}; padding-bottom: 5px;">${name}</h3>
-                    <p style="margin: 5px 0;"><strong>📍 Grad:</strong> ${city}</p>
-                    <p style="margin: 5px 0;"><strong>🎵 Glazba:</strong> ${music}</p>
-                    <p style="margin: 5px 0;"><strong>💰 Cijene:</strong> ${prices}</p>
-                    <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        <a href="${link}" target="_blank" style="background: ${typeColor}; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;">
-                            Posjeti stranicu
-                        </a>
-                        <button onclick="alert('🎟️ Rezervacija uspješna! QR kod ćeš dobiti na email.')" style="background: #00ccff; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-                            Rezerviraj
-                        </button>
-                    </div>
+                <div style="text-align:center;">
+                    <h3><a href="${link}" target="_blank">${naziv}</a></h3>
+                    <p><strong>Grad:</strong> ${grad}</p>
+                    <p><strong>Događaj:</strong> ${dogadjaj}</p>
+                    <p><strong>Cijene:</strong> ${cijene}</p>
                 </div>
             `);
         }
 
-        // ADD CLUBS TO MAP (50+ clubs)
-        // ZAGREB CLUBS
-        addClubToMap(45.8000, 15.9500, 'Aquarius', 'Zagreb', 'Commercial, EDM, House', 'Ulaz 10-15€, piće od 5€', 'https://aquarius.hr', 'luxury');
-        addClubToMap(45.8100, 15.9700, 'Depo', 'Zagreb', 'Techno, Deep House', 'Ulaz 12€, piće od 4€', 'https://depo-zg.com', 'techno');
-        addClubToMap(45.8150, 15.9750, 'Boogaloo', 'Zagreb', '80s, 90s, Commercial', 'Ulaz 8-10€, piće od 4€', 'https://boogaloo.hr', 'mainstream');
-        addClubToMap(45.8050, 15.9650, 'SAX!', 'Zagreb', 'R&B, Hip-Hop, Commercial', 'Ulaz 10€, piće od 5€', 'https://sax.hr', 'hiphop');
-        addClubToMap(45.8200, 15.9800, 'Masters', 'Zagreb', 'Commercial, House', 'Ulaz 15€+, piće od 6€', 'https://masters.hr', 'luxury');
-        addClubToMap(45.7950, 15.9550, 'Katran', 'Zagreb', 'Alternative, Rock, Indie', 'Ulaz 5-8€, piće od 3€', 'https://katran.hr', 'rock');
-        addClubToMap(45.8300, 15.9900, 'H2O Club', 'Zagreb', 'Commercial, EDM', 'Ulaz 10-20€, piće od 5€', 'https://instagram.com/h2o_club_zg', 'beach');
-        addClubToMap(45.7850, 15.9450, 'BP Club', 'Zagreb', 'Hip-Hop, R&B, Trap', 'Ulaz 8-12€, piće od 4€', 'https://facebook.com/BPClubZG', 'hiphop');
-        addClubToMap(45.7900, 15.9600, 'Tolkien\'s House', 'Zagreb', 'Rock, Metal', 'Ulaz 5-7€, piće od 3€', 'https://tolkien.hr', 'rock');
-        addClubToMap(45.8250, 15.9850, 'Gallery', 'Zagreb', 'Techno, Minimal', 'Ulaz 10€, piće od 4€', 'https://galleryclub.hr', 'techno');
+        // Klubovi u Zagrebu
+        dodajKlub(45.815, 15.981, "Depo Club", "Zagreb", "Techno Night", "ulaz ~12 €, piće od ~4-5 €", "https://www.depozagreb.hr");
+        dodajKlub(45.812, 15.975, "Boogaloo", "Zagreb", "Retro Party", "ulaz ~10 €, piće od ~4 €", "https://www.boogaloo.hr");
+        dodajKlub(45.810, 15.985, "Out Bar / Club", "Zagreb", "House / Commercial", "ulaz ~9-10 €, piće od ~4 €", "https://out-bar.hr");
+        dodajKlub(45.808, 15.978, "Katran", "Zagreb", "Underground Session", "ulaz ~8-10 €, piće od ~3-4 €", "https://katranzagreb.hr");
+        dodajKlub(45.805, 15.990, "Močvara", "Zagreb", "Live Indie Band", "ulaz ~15 €, piće od ~5 €", "https://močvara.hr");
 
-        // SPLIT CLUBS
-        addClubToMap(43.5081, 16.4402, 'Vanilla Club', 'Split', 'Commercial, House', 'Ulaz 15-20€, piće od 6€', 'https://vanilla.hr', 'luxury');
-        addClubToMap(43.5100, 16.4420, 'Central Club', 'Split', 'Commercial, Pop', 'Ulaz 10-15€, piće od 5€', 'https://central.hr', 'mainstream');
-        addClubToMap(43.5120, 16.4450, 'Judas', 'Split', 'Rock, Alternative', 'Ulaz 5-8€, piće od 3€', 'https://judas.hr', 'rock');
-        addClubToMap(43.5090, 16.4480, 'Quasimodo', 'Split', 'Live bands, Rock', 'Ulaz 8-10€, piće od 4€', 'https://quasimodo.hr', 'rock');
-        addClubToMap(43.5060, 16.4380, 'Academia', 'Split', 'Hip-Hop, R&B', 'Ulaz 10€, piće od 4€', 'https://academia-ghetto.com', 'hiphop');
-        addClubToMap(43.5150, 16.4350, 'O\'Hara Music Club', 'Split', 'Various, Theme nights', 'Ulaz 8-12€, piće od 4€', 'https://instagram.com/oharamusicclub', 'mainstream');
-        addClubToMap(43.5000, 16.4300, 'Fluid', 'Split', 'Techno, House', 'Ulaz 10€, piće od 4€', 'https://instagram.com/fluid.club.split', 'techno');
-        addClubToMap(43.5200, 16.4400, 'Kocka', 'Split', 'Alternative, Indie', 'Ulaz 5-7€, piće od 3€', 'https://kocka-club.com', 'rock');
+        // Klubovi u Splitu
+        dodajKlub(43.508, 16.440, "Vanilla Club", "Split", "Summer Vibes Party", "ulaz ~15 €, piće od ~6 €", "https://vanilla-club.hr");
+        dodajKlub(43.510, 16.445, "Central Club", "Split", "Mainstream Hits Night", "ulaz ~12 €, piće od ~5 €", "https://centralclub.hr");
+        dodajKlub(43.512, 16.438, "Club 305", "Split", "Electronic Tour", "ulaz ~10-12 €, piće od ~5-6 €", "https://club305split.hr");
+        dodajKlub(43.506, 16.442, "Kocka Club", "Split", "Hard Techno Rave", "ulaz ~8-10 €, piće od ~4 €", "https://kocka-club.com");
+        dodajKlub(43.514, 16.435, "Academia Ghetto", "Split", "Hip-Hop Live", "ulaz ~12 €, piće od ~5 €", "https://academiaghetto.com");
 
-        // RIJEKA CLUBS
-        addClubToMap(45.3271, 14.4420, 'Crkva', 'Rijeka', 'Techno, Underground', 'Ulaz 8-10€, piće od 3€', 'https://crkva.club', 'techno');
-        addClubToMap(45.3300, 14.4450, 'Palach', 'Rijeka', 'Alternative, Rock', 'Ulaz 5-7€, piće od 3€', 'https://palach.hr', 'rock');
-        addClubToMap(45.3250, 14.4400, 'Lotos Club', 'Rijeka', 'Commercial, House', 'Ulaz 12-15€, piće od 5€', 'https://lotos.hr', 'luxury');
-        addClubToMap(45.3220, 14.4380, 'Karolina', 'Rijeka', 'Commercial, Pop', 'Ulaz 8-10€, piće od 4€', 'https://karolina-club.com', 'mainstream');
-        addClubToMap(45.3350, 14.4480, 'Galeb', 'Rijeka', 'Commercial, House', 'Ulaz 8-10€, piće od 4€', 'https://facebook.com/galebclub', 'nautical');
-        addClubToMap(45.3200, 14.4350, 'Rakhia', 'Rijeka', 'Mixed, Commercial', 'Ulaz 5-8€, piće od 3€', 'https://facebook.com/rakhiabar', 'mainstream');
+        // Klubovi u Rijeci
+        dodajKlub(45.327, 14.442, "Club Crkva", "Rijeka", "Underground Techno", "ulaz ~8-9 €, piće ~4 €", "https://crkva.club");
+        dodajKlub(45.330, 14.445, "Karolina Club", "Rijeka", "House & Commercial", "ulaz ~10 €, piće ~5 €", "https://karolina-club.com");
+        dodajKlub(45.325, 14.440, "Indigo Bar & Club", "Rijeka", "Student Night", "ulaz ~7-8 €, piće ~3-4 €", "https://indigo-bar.hr");
+        dodajKlub(45.332, 14.438, "Rakhia Bar / Klub", "Rijeka", "Đir po Starom Gradu", "ulaz ~free do ~5 €, piće ~3-4 €", "https://ralphia-bar.com");
+        dodajKlub(45.328, 14.435, "Garçon Club", "Rijeka", "Late Night Commercial", "ulaz ~9-10 €, piće ~4-5 €", "https://garcon-club.hr");
 
-        // DUBROVNIK CLUBS
-        addClubToMap(42.6410, 18.1070, 'Revelin', 'Dubrovnik', 'Commercial, EDM', 'Ulaz 15-25€, piće od 7€', 'https://revelinclub.com', 'luxury');
-        addClubToMap(42.6440, 18.1100, 'East West', 'Dubrovnik', 'Lounge, House', 'Ulaz free, piće od 8€', 'https://eastwestbeachclub.com', 'beach');
-        addClubToMap(42.6380, 18.1050, 'Lazareti', 'Dubrovnik', 'Various, Cultural', 'Ulaz 5-10€, piće od 5€', 'https://lazareti.com', 'cultural');
-        addClubToMap(42.6500, 18.0950, 'Banje Beach Club', 'Dubrovnik', 'Commercial, House', 'Ulaz 10-15€, piće od 6€', 'https://banjebeach.com', 'beach');
+        // Klubovi u Osijeku
+        dodajKlub(45.551, 18.693, "Club Seven", "Osijek", "Commercial Hits Night", "ulaz ~8-10 €, piće ~3-4 €", "https://clubsevenosijek.hr");
+        dodajKlub(45.555, 18.690, "Banquet Club", "Osijek", "House & EDM", "ulaz ~9-11 €, piće ~4-5 €", "https://banquet-club.hr");
+        dodajKlub(45.553, 18.695, "Club Velvet", "Osijek", "Latin Party", "ulaz ~7-9 €, piće ~3-4 €", "https://clubvelvetosijek.hr");
+        dodajKlub(45.557, 18.688, "Club Mix", "Osijek", "Student Night", "ulaz ~5-6 €, piće ~2-3 €", "https://clubmixosijek.hr");
+        dodajKlub(45.550, 18.698, "Club Vibe", "Osijek", "Dance Floor Extravaganza", "ulaz ~10-12 €, piće ~5-6 €", "https://clubvibeosijek.hr");
 
-        // ZADAR CLUBS
-        addClubToMap(44.1190, 15.2430, 'The Garden', 'Zadar', 'Deep House, Techno', 'Ulaz 10-15€, piće od 5€', 'https://thegardenzadar.com', 'beach');
-        addClubToMap(44.1220, 15.2400, 'Arsenal', 'Zadar', 'Various, Live music', 'Ulaz 8-12€, piće od 4€', 'https://arsenalzadar.com', 'cultural');
-        addClubToMap(44.1150, 15.2350, 'Modesto', 'Zadar', 'Hip-Hop, R&B, Commercial', 'Ulaz 8-12€, piće od 4€', 'https://instagram.com/modesto_zadar', 'hiphop');
-        addClubToMap(44.1180, 15.2380, 'Aquarium', 'Zadar', 'Commercial, EDM', 'Ulaz 10-15€, piće od 5€', 'https://instagram.com/aquariumzadar', 'beach');
-        addClubToMap(44.1250, 15.2450, 'Ledana', 'Zadar', 'Commercial, Pop', 'Ulaz 8-10€, piće od 4€', 'https://facebook.com/ledanazadar', 'mainstream');
-
-        // OSIJEK CLUBS
-        addClubToMap(45.5510, 18.6930, 'Club Seven', 'Osijek', 'Commercial, Pop', 'Ulaz 8-10€, piće od 4€', 'https://clubsevenosijek.hr', 'mainstream');
-        addClubToMap(45.5550, 18.6900, 'Kampus', 'Osijek', 'Mixed, Student', 'Ulaz 5-7€, piće od 3€', 'https://kampusosijek.hr', 'student');
-        addClubToMap(45.5530, 18.6950, 'Club 1', 'Osijek', 'Commercial, House', 'Ulaz 8-10€, piće od 4€', 'https://club1.hr', 'mainstream');
-
-        // PULA CLUBS
-        addClubToMap(44.8680, 13.8490, 'Uljanik', 'Pula', 'Alternative, Rock', 'Ulaz 5-8€, piće od 3€', 'https://uljanik.hr', 'rock');
-        addClubToMap(44.8700, 13.8450, 'Pula Club', 'Pula', 'Commercial, Pop', 'Ulaz 8-10€, piće od 4€', 'https://pulaclubbing.com', 'mainstream');
-        addClubToMap(44.8650, 13.8470, 'Monvidal', 'Pula', 'Commercial, House', 'Ulaz 10-12€, piće od 5€', 'https://monvidal.hr', 'beach');
-
-        // ŠIBENIK CLUBS
-        addClubToMap(43.7360, 15.8900, 'Hitch', 'Šibenik', 'Commercial, Pop', 'Ulaz 8-10€, piće od 4€', 'https://hitch.hr', 'mainstream');
-        addClubToMap(43.7350, 15.8920, 'Arsenal', 'Šibenik', 'Cultural, Various', 'Ulaz 5-8€, piće od 4€', 'https://arsenalsibenik.hr', 'cultural');
-
-        // VARAŽDIN CLUBS
-        addClubToMap(46.3050, 16.3370, 'Ghetto', 'Varaždin', 'Alternative, Rock', 'Ulaz 5-7€, piće od 3€', 'https://ghetto.hr', 'rock');
-        addClubToMap(46.3080, 16.3340, 'Trak', 'Varaždin', 'Electronic, Techno', 'Ulaz 8-10€, piće od 4€', 'https://trak.hr', 'techno');
-
-        // KARLOVAC CLUBS
-        addClubToMap(45.4920, 15.5550, 'Karlovac Club', 'Karlovac', 'Commercial, Pop', 'Ulaz 8-10€, piće od 4€', 'https://karlovac-club.hr', 'mainstream');
-
-        // ČAKOVEC CLUBS
-        addClubToMap(46.3840, 16.4330, 'Club M', 'Čakovec', 'Commercial, House', 'Ulaz 7-9€, piće od 3€', 'https://facebook.com/clubm.cakovec', 'mainstream');
-
-        // SISAK CLUBS
-        addClubToMap(45.4830, 16.3710, 'Energy Club', 'Sisak', 'Commercial, EDM', 'Ulaz 8-10€, piće od 4€', 'https://instagram.com/energyclub.sisak', 'mainstream');
-
-        // SLAVONSKI BROD CLUBS
-        addClubToMap(45.1600, 18.0150, 'Brodski Klub', 'Slavonski Brod', 'Commercial, Folk', 'Ulaz 5-7€, piće od 3€', 'https://facebook.com/brodskiklub', 'mainstream');
-
-        // VUKOVAR CLUBS
-        addClubToMap(45.3550, 19.0020, 'Admiral', 'Vukovar', 'Commercial, Pop', 'Ulaz 7-9€, piće od 3€', 'https://facebook.com/admiralclubvukovar', 'mainstream');
-
-        // ZAPREŠIĆ CLUBS
-        addClubToMap(45.8560, 15.8070, 'Galaxy Club', 'Zaprešić', 'Commercial, House', 'Ulaz 8-10€, piće od 4€', 'https://instagram.com/galaxyclub_zapresic', 'mainstream');
-
-        // SAMOBOR CLUBS
-        addClubToMap(45.8010, 15.7180, 'Samobor Club', 'Samobor', 'Commercial, Pop', 'Ulaz 7-9€, piće od 3€', 'https://facebook.com/samoborclub', 'mainstream');
-
-        // VELIKA GORICA CLUBS
-        addClubToMap(45.7120, 16.0750, 'Gorički Klub', 'Velika Gorica', 'Commercial, Folk', 'Ulaz 6-8€, piće od 3€', 'https://facebook.com/gorickiklub', 'mainstream');
-
-        console.log('🎯 Party Finder mapa učitana sa ' + (document.querySelectorAll('.leaflet-marker-icon').length) + ' klubova!');
-
-        // ANIMATION ON SCROLL
-        document.addEventListener('DOMContentLoaded', function() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.feature-card, .club-card, .stat-box').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                observer.observe(el);
-            });
-        });
+        // Klubovi u Zadru
+        dodajKlub(44.119, 15.243, "Club RAW", "Zadar", "Beach After Party", "ulaz ~10 €, piće od ~4-5 €", "https://clubrawzadar.hr");
+        dodajKlub(44.122, 15.240, "Papaya Zadar", "Zadar", "Festival Night", "ulaz ~20 €, piće ~6-7 €", "https://clubpapaya-zadar.hr");
+        dodajKlub(44.117, 15.245, "Blue Daydream Club", "Zadar", "Summer House Night", "ulaz ~9-10 €, piće od ~4 €", "https://clubbluedaydream.hr");
+        dodajKlub(44.120, 15.238, "Halo Club", "Zadar", "Latin & Reggaeton", "ulaz ~11-12 €, piće od ~4-5 €", "https://clubhalo-zadar.hr");
+        dodajKlub(44.115, 15.242, "Lux Club Zadar", "Zadar", "VIP Night", "ulaz ~15 €, piće ~6-7 €", "https://clublux-zadar.hr");
     </script>
 </body>
 </html>
